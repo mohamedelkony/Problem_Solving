@@ -49,16 +49,6 @@ const int prime_mod = (int)1e9 + 7;
 const int mem_size = (int)2e5 + 2;
 ll mem[mem_size][31];
 
-
-struct pair_comper{
-	bool operator()(pair<int, int> a, pair<int, int> b){
-		return a.second < b.second;
-	}
-};
-bool comper1(pair<int, int>a, pair<int, int> b)
-{
-	return a.first > b.first;
-}
 vector<int>visited;
 int nodes_count = 0;
 //#define MULTITESTS
