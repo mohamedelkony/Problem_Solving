@@ -4,7 +4,7 @@ import java.io.*;
 /*
 https://codeforces.com/problemset/problem/1263/C
 */
-public class problem {
+public class Everyone_is_a_Winner {
     public static void main(String[] str) {
         boolean muiltTestCases = true;
         var cin = new FastScanner();
