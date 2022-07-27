@@ -1,0 +1,280 @@
+import java.io.*;
+import java.util.*;
+/*
+https://codeforces.com/problemset/problem/1526/C1
+*/
+public class problem {
+    public static void main(String[] str) {
+        boolean multiTestCases = false;
+        var cin = new FastScanner();
+
+        PrintWriter cout = new PrintWriter(new BufferedOutputStream(System.out));
+        int n = 1;
+        if (multiTestCases) n = cin.nextInt();
+        var s = new testCaseSolution(cin, cout);
+        while (n-- > 0) {
+            Boolean res = s.solve();
+            if (res == null) {
+                cout.println();
+                continue;
+            }
+            if (res) cout.print("YES");
+            else cout.print("NO");
+            cout.println();
+        }
+
+        cout.flush();
+    }
+}
+
+class testCaseSolution {
+    PrintWriter cout;
+    private final FastScanner cin;
+
+    public testCaseSolution(FastScanner cin, PrintWriter cout) {
+        this.cin = cin;
+        this.cout = cout;
+    }
+    int n;
+    long mem[][];
+    int []arr;
+    Boolean solve() {
+        int n=cin.nextInt();
+        arr=new int[n];
+        for(int i=0;i<n;i++)
+            arr[i]=cin.nextInt();
+        mem=new long[n][];
+
+        for(int i=0;i<n;i++){
+            mem[i]=new long[n+1];
+            for(int j=0;j<=n;j++)
+                mem[i][j]=-1;
+        }
+        /*
+        for(int at=0;at<n;at++){
+            for(int num=0;num<n;num++)
+                dp(at,num);
+        }
+
+
+        for(int i=0;i<n;i++){
+            if(dp(n-1,i)>=0)
+                ans=i;
+        }*/
+        for(int at=0;at<n;at++) {
+            mem[at][0] = 0;
+        }
+        mem[0][1]=(arr[0]>=0?arr[0]:-1);
+        for(int at=1;at<n;at++){
+            for(int num=1;num<=n;num++){
+                if(num>at+1)continue;
+                long c1=mem[at-1][num-1];
+                if(c1!=-1)
+                    c1+=arr[at];
+                if(c1<0)
+                    c1=-1;
+                long c2=mem[at-1][num];
+                mem[at][num]=Math.max(c1,c2);
+            }
+        }
+        int ans=0;
+        for(int i=0;i<=n;i++){
+            if(mem[n-1][i]>=0)
+                ans=i;
+        }
+        System.out.print(ans);
+        return null;
+    }
+    long dp(int at,int num){
+        if(num==0)
+            return 0;
+        if(at<0||num<0)
+            return 0;
+        if(mem[at][num]!=-1)
+            return mem[at][num];
+
+        long c2=dp(at-1,num);
+        long c1=dp(at-1,num-1)+arr[at];
+        if(c1<0)
+            c1=-1;
+
+        return mem[at][num]=Math.max(c1,c2);
+    }
+}
+
+final class Algo {
+    private static final long mod = (long) 1e9 + 7;
+
+    private Algo() {
+    }
+
+    // O(log(N))
+    public static long gcd(long a, long b) {
+        if (b == 0) return a;
+        return gcd(b, a % b);
+    }
+
+    // O(sqrt(N))
+    public static TreeSet<Integer> getDivisors(int n) {
+        var st = new TreeSet<Integer>();
+        for (int i = 1; i * i <= n; i++) {
+            if (n % i == 0) st.add(i);
+            if (n % (n / i) == 0) st.add(n / i);
+        }
+        return st;
+    }
+
+    // O(N*(log(log(N)))
+    public static List<Integer> primesTill_N(int n) {
+       boolean[] prime=new boolean[n+1];
+       for(int i=2;i<=n;i++)
+           prime[i]=true;
+       for(int i=2;i<=n;i++){
+           if(prime[i] &&(long)i*i<=n){
+               for(int j=i*i;j<=n;j+=i)
+                   prime[j]=false;
+           }
+       }
+       ArrayList<Integer> primes=new ArrayList<>();
+       for(int i=0;i<=n;i++){
+           if(prime[i])
+               primes.add(i);
+       }
+       return primes;
+    }
+
+    // O(sqrt(N))
+    public static TreeMap<Integer, Integer> getPrimeFactors(int n) {
+        var ans = new TreeMap<Integer, Integer>();
+        for (int d = 2; d * d <= n; d++) {
+            while (n % d == 0) {
+                ans.put(d,ans.getOrDefault(d,0)+1);
+                n /= d;
+            }
+        }
+        if (n > 1)
+            ans.put(n,1);
+        return ans;
+    }
+
+    // O(exponent)
+    public static long pow_long(long base, long exponent) {
+        long ans = 1;
+        base %= mod;
+        for (long i = 0; i < exponent; i++) {
+            ans *= base;
+            ans %= mod;
+        }
+        return ans;
+    }
+}
+
+class FastScanner {
+    BufferedReader br;
+    StringTokenizer st;
+
+    public FastScanner() {
+        br = new BufferedReader(new InputStreamReader(System.in));
+    }
+
+    String next() {
+        while (st == null || !st.hasMoreElements()) {
+            try {
+                st = new StringTokenizer(br.readLine());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return st.nextToken();
+    }
+    int nextInt() {
+        return Integer.parseInt(next());
+    }
+
+    long nextLong() {
+        return Long.parseLong(next());
+    }
+
+    double nextDouble() {
+        return Double.parseDouble(next());
+    }
+
+    String nextLine() {
+        String str = "";
+        try {
+            str = br.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return str;
+    }
+
+
+    public Leetcode leetcode = new Leetcode();
+
+    class Leetcode {
+        double[] nextDoubleArray() {
+            String s = next();
+            s = s.replace("\"", "");
+            var x = s.substring(1, s.length() - 1).split(",");
+            double[] ans = new double[x.length];
+            for (int i = 0; i < x.length; i++)
+                ans[i] = Double.parseDouble(x[i]);
+            return ans;
+        }
+
+        int[] nextIntArray() {
+            String s = next();
+            s = s.replace("\"", "");
+            var x = s.substring(1, s.length() - 1).split(",");
+            var ans = new int[x.length];
+            for (int i = 0; i < x.length; i++)
+                ans[i] = Integer.parseInt(x[i]);
+            return ans;
+        }
+        int[][] nextIntMatrix() {
+            String s = next();
+            s = s.replace("\"", "");
+            s = s.substring(2, s.length() - 2);
+            var lst = s.split("\\],\\[");
+            var ans =new int[lst.length][];
+            for(int i=0;i<lst.length;i++) {
+                var row = lst[i].split(",");
+                ans[i]=new int[row.length];
+                for(int j=0;j< row.length;j++)
+                    ans[i][j]=Integer.valueOf(row[j]);
+            }
+            return ans;
+        }
+        String[][] nextStringMatrix() {
+            String s = next();
+            s = s.replace("\"", "");
+            s = s.substring(2, s.length() - 2);
+            var lst = s.split("\\],\\[");
+            var ans =new String[lst.length][];
+            for(int i=0;i<lst.length;i++)
+                ans[i]=lst[i].split(",");
+            return ans;
+        }
+        List<List<String>> nextStringMatrixList() {
+            String s = next();
+            s = s.replace("\"", "");
+            s = s.substring(2, s.length() - 2);
+            var lst = s.split("\\],\\[");
+            var ans = new ArrayList<List<String>>();
+            for (String string : lst)
+                ans.add(Arrays.asList(string.split(",")));
+            return ans;
+        }
+        String[] nextStringArray() {
+            String s = next();
+            s.replace("\"", "");
+            return s.substring(1, s.length() - 1).split(",");
+        }
+        List<String> nextStringArrayList() {
+            return Arrays.asList(nextStringArray());
+        }
+    }
+}
+
+ 
